@@ -18,22 +18,17 @@ void Graph::randomize() {
 
 	randomSeed *= 2;
 
-	std::cout << randomSeed << std::endl;
-
-	gravityY = 3; //rand() % 2 + 3;
+	// Randomizing the gravity and the position of every object
+	gravityY = 3;
 	gravityX = rand() % 3 + 1;
 
 	power = gravityY + ((rand() % 3) + 6);
-
-	//std::cout << gravityX << ' ' << gravityY << ' ' << power << std::endl;
-
 	const float positionX = rand() % (int)(width - size.x) + size.x;
 	const float positionY = height;
 
 	if (positionX < width / 2) {
 		gravityX *= -1;
 	}
-
 	position = sf::Vector2f(positionX, positionY);
 }
 
