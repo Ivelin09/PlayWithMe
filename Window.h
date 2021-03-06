@@ -10,6 +10,7 @@ class Sector;
 
 enum class WINDOW_TYPES { DragGame, SoundGame };
 
+// The base class of all windows
 class Window
 {
 public:
