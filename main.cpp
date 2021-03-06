@@ -64,7 +64,8 @@ int main()
 					if (mouseCords.x >= objCords.x && mouseCords.x <= objCords.x + objSize.x &&
 						mouseCords.y >= objCords.y && mouseCords.y <= objCords.y + objSize.y) {
 						next = obj.digits[i].second->start();
-
+                                                  
+                                                // Loading all the windows from here
 						while (next) {
 							next = next->start();
 						}
@@ -85,6 +86,8 @@ int main()
 			}
 		}
 
+                // Redrawing every frame in the menu
+
 		window.clear();
 		window.draw(bg);
 
@@ -96,7 +99,8 @@ int main()
 
 		window.display();
 	}
-
+        
+        // Deallocating every window
 	for (int i = 0; i < obj.digits.size(); i++)
 		delete obj.digits[i].second;
 }
