@@ -51,7 +51,6 @@ int main()
 
 	while (window.isOpen()) {
 		sf::Event e;
-		std::cout << "aa\n";
 		while (window.pollEvent(e)) {
 			if (e.type == sf::Event::Closed)
 				window.close();
