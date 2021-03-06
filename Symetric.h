@@ -1,6 +1,8 @@
 #pragma once
 
 #include<vector>
+
+// Function which makes symmetrically correct every element in buttons
 template<typename A>
 void setSymetric(std::vector<A>& buttons, const int startWidth,
 	const int width, const double x, const double y)
