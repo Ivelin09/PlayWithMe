@@ -15,7 +15,7 @@
 extern const double width;
 extern const double height;
 #include<stack>
-
+//kkkkkkkkkkkkkkkk
 #include<ctime>
 #include<cstdlib>
 
@@ -39,11 +39,11 @@ protected:
 
     sf::Vector2f playAgain;
     const std::string gameName = "DragGame";
-
     double dragY, dropY;
     int correct = 0;
 
     int level = 0;
+    std::string secName;
 public:
     DragGame(sf::RenderWindow& window, std::vector<Image> dragPic, std::vector<Image> dropPic,
         const std::string& background, std::vector<std::pair<Image, Window*>> nav);
@@ -60,21 +60,29 @@ public:
         return this->nav;
     }
 
-    void linkUp(Stars& star) {
+    void linkUp(Stars& star, std::string secName) {
         this->star = &star;
+        this->secName = secName;
     }
 
     ~DragGame() = default;
 };
 
+class ColorDrag : public DragGame {
+    ColorDrag(sf::RenderWindow& window, std::vector<Image>& dragPic, std::vector<Image>& dropPic,
+        const std::string& background, std::vector<std::pair<Image, Window*>> nav) : DragGame(window, dragPic, dropPic, background, nav) {}
+};
+
 class FigureDrag : public DragGame {
 public:
     std::vector<Stars>* stars;
-    FigureDrag(sf::RenderWindow& window, std::vector<Image> dragPic, std::vector<Image> dropPic,
+    FigureDrag(sf::RenderWindow& window, std::vector<Image>& dragPic, std::vector<Image>& dropPic,
         const std::string& background, std::vector<std::pair<Image, Window*>> nav) : DragGame(window, dragPic, dropPic, background, nav) {}
 
-    void linkUp(std::vector<Stars>& stars) {
+    void linkUp(std::vector<Stars>& stars, std::string sectorName) {
         this->stars = &stars;
+
+        return;
     }
 private:
     void nextLevel() override {

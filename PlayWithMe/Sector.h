@@ -11,6 +11,8 @@
 #include<fstream>
 #include "Game.h"
 
+#include<ios>
+
 class Sector : public Window {
 private:
 	std::vector<Image> game;
@@ -29,6 +31,10 @@ public:
 
 	std::vector<std::vector<Stars>>& getStars() {
 		return this->stars;
+	}
+
+	std::string getName() const {
+		return this->secName;
 	}
 
 	Sector(sf::RenderWindow& window, const std::vector<Window*> link,
@@ -77,47 +83,18 @@ public:
 				this->game[i].getShape().getPosition().y + this->game[i].getShape().getSize().y);
 		}
 
-		// LOAD SAVE
-		std::ifstream stream(Window::FILE);
-		std::string input;
-
 		bool start = false; 
 		int gameLevel = 0;
-		while (std::getline(stream, input)) {
-			if (input == (" " + secName))
-				start = true;
-			else if (start && input == "")
-				break;
-
-			if (!start)
-				continue;
-
-			bool flag = false;
-			std::string word;
-
-			int level = 0;
-			for (int i = 0; i < input.size(); i++) {
-				if (input[i] == ' ')
-					continue;
-
-				if (input[i] == ':')
-					flag = true;
-				else if (!flag)
-					word += input[i];
-				else
-					level = level * 10 + (input[i] - '0');
-			}
-			if (level > 0) {
-				for (int i = 0; i < level; i++)
-					this->stars[gameLevel][i].activate();
-				gameLevel++;
-			}
-		}
-		stream.close();
 
 	}
 	Window* start() override
 	{
+		for (int i = 0; i < Singleton::table.getSector(this->secName).size(); i++) {
+			for (int j = 0; j < Singleton::table.getSector(this->secName)[i]; j++) {
+				this->stars[i][j].activate();
+			}
+		}
+
 		while (window.isOpen())
 
 		{
@@ -173,7 +150,7 @@ public:
 	}
 
 	void levelUp() {
-
+		return;
 	}
 };
 

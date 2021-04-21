@@ -18,9 +18,17 @@ Image Singleton::unfilledStar;
 #include "Sector.h"
 
 #include "ColorSound.h"
+#include<memory>
 
+#include "Symetric.h"
+
+#include "DragGame.h"
+#include "ObjectFinder.h"
 
 sf::SoundBuffer Singleton::correctSound, Singleton::incorrectSound;
+
+Resources Singleton::table;
+
 std::vector<std::pair<sf::RectangleShape, Window*>> Singleton::digits;
 
 Singleton::Singleton()
@@ -35,14 +43,58 @@ Singleton::Singleton()
 	if (!stream.is_open())
 		std::cout << "PROBLEM OPENING THE FILE\n";
 
-	std::getline(stream, input);
+	std::getline(stream, input); // checking if the file is empty
 	if (input.empty()) {
+		// if empty rewrite the information
 		std::ofstream streamInput(Window::FILE);
-		streamInput << "Figures \nDragGame: 0\nSoundGame: 0\nFallingGame: 0";
+		streamInput << "Digits\nDragGame: 0\nSoundGame: 0\nFallingGame: 0\n" 
+			<< "\nFigures\nDragGame: 1\nSoundGame: 0\nFallingGame: 0\n"
+			<< "\nColors\nColor: 0\n"; 
+		streamInput.close();
+	} else {
+		// if not get it
+		std::ifstream streamOutput(Window::FILE);
+		std::vector<std::pair<std::string, int>> info;
+
+		std::string input, header;
+		std::string output;
+
+		bool isHeader = true;
+		while (std::getline(streamOutput, input)) {
+			if (input == "") {
+				isHeader = true;
+				continue;
+			}
+
+			if (isHeader) {
+				header = input;
+				isHeader = false;
+
+				continue;
+			}
+			bool flag = false;
+
+			int level = 0;
+			std::string word;
+			for (int i = 0; i < input.size(); i++) {
+
+				if (input[i] == ' ')
+					continue;
+
+				if (input[i] == ':')
+					flag = true;
+				else if (!flag)
+					word += input[i];
+				else
+					level = level * 10 + (input[i] - '0');
+			}
+			Singleton::table.getInfo()[header].push_back(level);
+		
+		}
+		streamOutput.close();
 	}
-
+	stream.close(); 
 	// =========
-
 	musicButton.setTexture("Music.png");
 	playWithMe.setTexture("playWithMe.png");
 
@@ -73,10 +125,54 @@ Singleton::Singleton()
 
 	// INITIALIZING FIGURES AND DIGITS
 
-	std::vector<Image> digitPics(9), digitPicsPlace(9);
 
-	std::string figures[] = { "Square", "Triangle", "Circle" };
+
+
+	std::string figures[] = { "square", "triangle", "circle" };
+	std::string color[] = { "red", "green", "blue" };
 	std::vector<Image> figuresPics(3), figuresPicsPlace(3);
+	
+	const size_t colorSize = sizeof(color) / sizeof(color[0]);
+	const size_t figureSize = sizeof(figures) / sizeof(figures[0]);
+	std::vector<std::vector<Image>> multiColorObjects(colorSize, std::vector<Image>(figureSize));
+
+	for (size_t i = 0; i < colorSize; i++) {
+		for (size_t j = 0; j < figureSize; j++) {
+			multiColorObjects[i][j].setTexture(color[i] + figures[j] + ".png");
+			multiColorObjects[i][j].getShape().setSize({200,200});
+
+			// CONCATINATING SOUNDS 
+			std::vector<sf::Int16> vec;
+
+			sf::SoundBuffer colorSound, figureSound;
+
+			colorSound.loadFromFile("Sound/" + (std::string)color[i] + ".wav");
+			figureSound.loadFromFile("Sound/" + (std::string)figures[j] + ".wav");
+
+			const sf::Int16* samplesA = colorSound.getSamples(),
+				*samplesB = figureSound.getSamples();
+
+			vec.reserve(colorSound.getSampleCount() + figureSound.getSampleCount());
+
+			for (size_t i = 0; i < colorSound.getSampleCount(); ++i)
+				vec.push_back(samplesA[i]);
+			for (size_t i = 0; i < figureSound.getSampleCount(); ++i)
+				vec.push_back(samplesB[i]);
+
+		    sf::SoundBuffer combinedBuffer;
+			combinedBuffer.loadFromSamples(vec.data(), vec.size(), colorSound.getChannelCount(), figureSound.getSampleRate());
+
+			// ================
+			multiColorObjects[i][j].setBuffer(combinedBuffer);
+			multiColorObjects[i][j].tag = "STAR";
+		}
+	}
+
+	std::cout << multiColorObjects[0][0].getBuffer().getDuration().asMicroseconds();
+
+	std::vector<Image> digitPics, digitPicsPlace;
+	digitPics.resize(9);
+	digitPicsPlace.resize(9);
 
 	for (int i = 0; i < digitPics.size(); i++) {
 		const sf::Vector2f size((width + height) / 19, (width + height) / 19);
@@ -89,7 +185,7 @@ Singleton::Singleton()
 
 		digitPicsPlace[i].setTexture(std::to_string(i + 1) + "Place.png");
 		digitPicsPlace[i].getShape().setSize(size);
-	}
+	} 
 
 	for (int i = 0; i < figuresPics.size(); i++) {
 		const sf::Vector2f size((width + height) / 19, (width + height) / 19);
@@ -157,7 +253,7 @@ Singleton::Singleton()
 	nav.emplace_back(backArrow, nullptr);
 
 	DragGame* GameLevel1 = new DragGame(window, { digitPics[0], digitPics[1], digitPics[2] },
-		{ digitPicsPlace[0], digitPicsPlace[1], digitPicsPlace[2] }, "DigitBG.jpg", nav);
+		{digitPicsPlace[0], digitPicsPlace[1], digitPicsPlace[2] }, "DigitBG.jpg", nav);
 
 	digitImage.loadFromFile(ImagePath + "buttonDigits.png");
 	button.setTexture(&digitImage);
@@ -170,15 +266,13 @@ Singleton::Singleton()
 	GameLevel1->getNav()[FrontArrow].second = GameLevel2;
 	GameLevel2->getNav()[BackArrow].second = GameLevel1;
 
-	DragGame* GameLevel3 = new DragGame(window, digitPics,
-		digitPicsPlace, "DigitBG.jpg", nav);
+	DragGame* GameLevel3 = new DragGame(window, { digitPics[0], digitPics[1], digitPics[2], digitPics[3], digitPics[4], digitPics[5], digitPics[6], digitPics[7], digitPics[8] },
+		{ digitPicsPlace[0], digitPicsPlace[1], digitPicsPlace[2], digitPicsPlace[3], digitPicsPlace[4], digitPicsPlace[5], digitPicsPlace[6], digitPicsPlace[7], digitPicsPlace[8] }, "DigitBG.jpg", nav);
 
 	GameLevel2->getNav()[FrontArrow].second = GameLevel3;
 	GameLevel3->getNav()[BackArrow].second = GameLevel2;
 
 	FigureDrag* figuresLevel = new FigureDrag(window, figuresPics, figuresPicsPlace, "figuresBG.png", nav);
-
-	// FIGURES NAV
 
 	sf::RectangleShape figuresButton(sf::Vector2f(width / 4, height / 4));
 	figuresButton.setTexture(&figuresImage);
@@ -188,7 +282,7 @@ Singleton::Singleton()
 	figuresButton.setPosition(width / 2 - figuresButton.getSize().x / 2, height / 2 - figuresButton.getSize().y / 2 + additionalSpace);
 	// Click On Figure
 	//std::vector<Image> digits = buttons;
-	FallingFigures* digitsFall = new FallingFigures(window, digitPics, "DigitBg.jpg", nav);
+	//FallingFigures* digitsFall = new FallingFigures(window, digitPics, "DigitBg.jpg", nav);
 
 	SoundGame* digitSound = new SoundGame(window, digitPics, "DragGame.png", nav);
 	SoundGame* figuresSound = new SoundGame(window, figuresPics, "figuresBG.png", nav);
@@ -200,24 +294,30 @@ Singleton::Singleton()
 	buttons.push_back(a1);
 	buttons.push_back(a2);
 
-	ColorSound* beta = new ColorSound(window, { digitPics[0], digitPics[1], digitPics[2] }, "DragGame.png", nav);
+	ColorSound* beta = new ColorSound(window, multiColorObjects, "DragGame.png", nav);
 	FallingFigures* figuresFall = new FallingFigures(window, figuresPics, "DigitBg.jpg", nav);
 
 	Sector* sec = new Sector(window,
-		{ GameLevel1, digitSound, digitsFall }, { Image(), Image(), Image() }, nav, "Digits");
+		{ GameLevel1, digitSound, nullptr/*digitsFall */}, { Image(), Image(), Image() }, nav, "Digits");
 	Sector* sec1 = new Sector(window, { figuresLevel, figuresSound , figuresFall }, buttons, nav, "Figures");
 
-	digitsFall->linkUp(sec->getStars()[2]);
-	figuresFall->linkUp(sec1->getStars()[2]);
+    ObjectFinder *omega = new ObjectFinder(window, digitPics, "none", nav);
+	Sector* colors = new Sector(window, { nullptr, nullptr, nullptr }, { Image(),Image(), Image() }, nav, "Colors");
 
-	GameLevel1->linkUp(sec->getStars()[0][0]);
-	GameLevel2->linkUp(sec->getStars()[0][1]);
-	GameLevel3->linkUp(sec->getStars()[0][2]);
+	//digitsFall->linkUp(sec->getStars()[2], sec->getName());
+	figuresFall->linkUp(sec1->getStars()[2], sec1->getName());
+	
+	GameLevel1->linkUp(sec->getStars()[0][0], sec->getName());
+	GameLevel2->linkUp(sec->getStars()[0][1], sec->getName());
+	GameLevel3->linkUp(sec->getStars()[0][2], sec->getName());
 
-	digitSound->linkUp(sec->getStars()[1]);
+	digitSound->linkUp(sec->getStars()[1], sec->getName());
 
-	figuresLevel->linkUp(sec1->getStars()[0]);
-	figuresSound->linkUp(sec1->getStars()[1]);
+	figuresLevel->linkUp(sec1->getStars()[0], sec->getName());
+	figuresSound->linkUp(sec1->getStars()[1], sec->getName());
+
+	//beta->linkUp(colors->getStars()[0], colors->getName());
+	
 	
 	buttons.clear();
 
@@ -238,7 +338,7 @@ Singleton::Singleton()
 	foo.setPosition(0, 0);
 
 	foo.setFillColor(sf::Color::Cyan);
-
-	//digits.emplace_back(foo, beta);
+	
+	digits.emplace_back(foo, colors);
 }
 Singleton Singleton::obj;

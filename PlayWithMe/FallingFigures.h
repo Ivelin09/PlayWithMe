@@ -15,6 +15,8 @@
 #include "Stars.h"
 #include<fstream>
 
+#include "Singleton.h"
+
 
 class FallingFigures : public Window
 {
@@ -41,6 +43,9 @@ private:
 
 	sf::RectangleShape box;
 	bool isSound = false;
+
+	std::string gameName = "FallingGame";
+	std::string secName;
 	void uptade() {
 		using namespace std::chrono_literals;
 
@@ -145,7 +150,8 @@ public:
 		}
 	}
 
-	void linkUp(std::vector<Stars>& star) {
+	void linkUp(std::vector<Stars>& star, std::string secName) {
+		this->secName = secName;
 		this->stars = &star;
 	}
 
@@ -182,7 +188,7 @@ public:
 
 						if (mouseCords.x >= position.x && mouseCords.x <= position.x + size.x &&
 							mouseCords.y >= position.y && mouseCords.y <= position.y + size.y) {
-							reloadFile(starLevel, this->stars->size(), "FallingGame", Window::FILE , *stars);
+							Singleton::table.levelUp(this->secName, GAME_TYPE::FALLINGGAME, strike);
 							return nav[i].second;
 						}
 					}

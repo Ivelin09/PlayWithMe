@@ -1,4 +1,12 @@
- Digits
-DragGame:3
-SoundGame:1
-FallingGame:0
+Digits
+DragGame: 0
+SoundGame: 0
+FallingGame: 0
+
+Figures
+DragGame: 1
+SoundGame: 0
+FallingGame: 0
+
+Colors
+Color: 0

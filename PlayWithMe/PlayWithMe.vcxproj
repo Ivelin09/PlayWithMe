@@ -114,15 +114,15 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_USE_MATH_DEFINES;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\Ivo\source\repos\PlayWithMe\PlayWithMe\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Ivo\source\repos\PlayWithMe\PlayWithMe\SFML-2.5.1\include;C:\Users\Ivo\source\repos\PlayWithMe\PlayWithMe\Candle-master\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Ivo\source\repos\PlayWithMe\PlayWithMe\SFML-2.5.1\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;opengl32.lib;freetype.lib;sfml-window-d.lib	;winmm.lib;gdi32.lib;sfml-audio-d.lib	;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;sfml-network-d.lib	;ws2_32.lib;sfml-system-d.lib	;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Ivo\source\repos\PlayWithMe\PlayWithMe\SFML-2.5.1\lib;C:\Users\Ivo\source\repos\PlayWithMe\PlayWithMe\Candle-master\build\lib\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Candle-s.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;opengl32.lib;freetype.lib;sfml-window-d.lib	;winmm.lib;gdi32.lib;sfml-audio-d.lib	;openal32.lib;flac.lib;vorbisenc.lib;vorbisfile.lib;vorbis.lib;ogg.lib;sfml-network-d.lib	;ws2_32.lib;sfml-system-d.lib	;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,7 +151,9 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Images.cpp" />
+    <ClCompile Include="ObjectFinder.cpp" />
     <ClCompile Include="PlayWithMe.cpp" />
+    <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Sector.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="SoundGame.cpp" />
@@ -164,6 +166,8 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="Graph.h" />
     <ClInclude Include="Images.h" />
+    <ClInclude Include="ObjectFinder.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="Sector.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="SoundGame.h" />

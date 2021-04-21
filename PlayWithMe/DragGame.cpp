@@ -4,6 +4,8 @@
 
 #include<SFML/Graphics.hpp>
 
+#include "Game.h"
+
 #include "Symetric.h"
 DragGame::DragGame(sf::RenderWindow& window, std::vector<Image> dragPic,
     std::vector<Image> dropPic, const std::string& background, std::vector<std::pair<Image, Window*>> nav) : Window(window, background, nav),
@@ -122,8 +124,8 @@ Window* DragGame::start()
                                 strike++;
 
                             if (!isActivate) {
-                                isActivate = true;
-                                reloadFile(1, this->gameName, Window::FILE, *this->star);
+                                isActivate = true; 
+                                Singleton::table.levelUp(this->secName, GAME_TYPE::DRAGGAME);
                             }
 
                             this->nav[PlayAgain].first.setVisibility(false);

@@ -1,0 +1,4 @@
+C:/Users/Ivo/source/repos/PlayWithMe/PlayWithMe/Candle-master/build/CMakeFiles/Candle-s.dir
+C:/Users/Ivo/source/repos/PlayWithMe/PlayWithMe/Candle-master/build/CMakeFiles/demo.dir
+C:/Users/Ivo/source/repos/PlayWithMe/PlayWithMe/Candle-master/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/Ivo/source/repos/PlayWithMe/PlayWithMe/Candle-master/build/CMakeFiles/ZERO_CHECK.dir

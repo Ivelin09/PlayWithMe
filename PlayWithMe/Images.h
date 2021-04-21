@@ -37,6 +37,10 @@ public:
             this->sound.loadFromFile(this->pathSound);
             this->player.setBuffer(this->sound);
         }
+        else {
+            this->sound = image.sound;
+            this->player.setBuffer(this->sound);
+        }
     } 
     Image& operator=(const Image& image) {
         this->tag = image.tag;
@@ -100,12 +104,12 @@ public:
     {
         this->player.setBuffer(sound);
     }
-
+    
     const sf::SoundBuffer& getSound() const {
         return this->sound;
     }
 
-    const sf::Sound& getlayer() const {
+    sf::Sound& getPlayer() {
         return this->player;
     }
 
@@ -124,6 +128,15 @@ public:
         }
         else
             shape.setSize(this->size);
+    }
+
+    void setBuffer(sf::SoundBuffer& buffer) {
+        this->sound = buffer;
+        this->player.setBuffer(this->sound);
+    }
+
+    sf::SoundBuffer getBuffer() const {
+        return this->sound;
     }
 
     std::string pathImage, pathSound;

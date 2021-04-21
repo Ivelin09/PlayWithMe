@@ -15,6 +15,9 @@
 #include<utility>
 
 #include<unordered_set>
+#include<Candle/Candle.hpp>
+
+#include<fstream>
 
 const double width = 1200;
 const double height = 800;
@@ -28,6 +31,7 @@ Singleton& obj = Singleton::get();
 
 int main()
 {
+	candle::DirectedLight w;
 	window.setFramerateLimit(120);
 
 	sf::Texture file;
@@ -113,6 +117,49 @@ int main()
 		window.display();
 	}
 
-	for (int i = 0; i < obj.digits.size(); i++)
+	
+	std::ifstream g("saves.txt");
+	g.clear();
+
+	auto& k = Singleton::table.getInfo();
+	std::vector<std::pair<std::string, int>> info;
+
+	std::string input, header;
+	std::string output;
+
+	int game = 0;
+	while (std::getline(g, input)) {
+		if (input.empty() || k.find(input) != k.end()) {
+			header = input;
+			output += input + "\n";
+			game = 0;
+			continue;
+		}
+		bool flag = false;
+
+		int level = 0;
+		std::string word;
+		for (int i = 0; i < input.size(); i++) {
+
+			if (input[i] == ' ')
+				continue;
+
+			if (input[i] == ':')
+				flag = true;
+			else if (!flag)
+				word += input[i];
+			else
+				level = level * 10 + (input[i] - '0');
+		}
+		output += word + ":" + std::to_string(k[header][game++]) + "\n";
+	}
+	std::ofstream streamInput("saves.txt");
+	streamInput.clear();
+
+	streamInput << output;
+
+ 	for (int i = 0; i < obj.digits.size(); i++)
 		delete obj.digits[i].second;
+
+
 }

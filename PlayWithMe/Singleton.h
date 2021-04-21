@@ -7,6 +7,11 @@
 #include<list>
 #include "Window.h"
 
+#include "Game.h"
+
+#include<unordered_map>
+#include "Resources.h"
+
 class DragGame;
 
 extern sf::RenderWindow window;
@@ -25,7 +30,6 @@ public:
 	static sf::SoundBuffer correctSound, incorrectSound;
 	static sf::Sound correct, incorrect;
 
-	Image one, two, three, four, five, six, seven, eight, nine;
 	Image orangeSquare, orangeTriangle, orangeCircle, square, triangle, circle;
 
 	std::vector<Image*> orangeFigures{ &orangeSquare, &orangeTriangle, &orangeCircle };
@@ -53,7 +57,9 @@ public:
 	sf::Texture figuresImage, digitImage;
 
 	std::vector<Image> dragPic, dropPic;
+
 	static std::vector<std::pair<sf::RectangleShape, Window*>> digits;
+	static Resources table;
 private:
 
 	static Singleton obj;
