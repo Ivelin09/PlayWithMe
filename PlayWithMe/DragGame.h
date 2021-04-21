@@ -15,7 +15,7 @@
 extern const double width;
 extern const double height;
 #include<stack>
-//kkkkkkkkkkkkkkkk
+//kkkkkkkkkkkkkkkka
 #include<ctime>
 #include<cstdlib>
 
